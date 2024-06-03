@@ -14,7 +14,8 @@
 
 但是在已有的方法中，相似类别的样本常常在特征空间里的距离挨得很近，大大限制了分类精度。本文提出在类别之间加入自适应的边际距离来提升基于度量学习的元学习边际距离是通过类别之间的语义相似度自动生成的。直观上，语义上越相似的类别之间越难区分，设定的边际距离也应该越大。
 
-![image-20240603161523677](C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\image-20240603161523677.png)
+![image](https://github.com/Wec126/TRAML-protonet/assets/57513224/6c1e6562-9ac7-49a4-baa5-98682f1953f6)
+
 
 [上图为使用自适应边际示意图]
 
@@ -50,13 +51,15 @@ $L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\
 
 通过合适地引入语义信息，CRAML可以把相似地类别在特征空间中分的更开，从而帮助更好地标识新类的样本
 
-![image-20240603164034383](C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\image-20240603164034383.png)
+![image](https://github.com/Wec126/TRAML-protonet/assets/57513224/9282f25f-e0ea-48d4-a6d1-ae14e6c2231a)
+
 
 ### 1.5 任务相关的边际损失(TRAML)
 
 到目前为止，我们都只考虑边际与任务无关。如果每次只考虑一个meta-training task中涉及到的类别，那么可以更加精细地生成合适地边际。通过将一个meta-training task中的每个类与该meta-training task中其他类一一对比，我们可以衡量一个task内“相对的”语义相似度，从而生成适合这个task的边际。
 
-![image-20240603164047394](C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\image-20240603164047394.png)
+![image](https://github.com/Wec126/TRAML-protonet/assets/57513224/bc4cfe82-ae32-4903-b6b2-71833633abcb)
+
 
 具体来说，对于一个meta-training task中的类$y∈C_t$，我们用一个神经网络$G$来生成task内的边际，即$\{m^{tr}_{y,k}\}_{y∈C_t\diagdown \{y\}}=G(\{sim(e_y,e_k)\}_{k∈C_t\diagdown \{y\}})$
 
