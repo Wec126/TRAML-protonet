@@ -29,17 +29,17 @@
 
 #### 损失函数
 
-在meta-training阶段，我们从base class数据集中随机抽取$n_t$个类，类别集合记作$C_t$，每个类中随机抽取$n_s$个样本，合并后作为小训练集，成为支持集$S$。然后再从每个类随机抽取若干样本，合并后作为小测试集，成为问询集$Q$。支持集和问询集中的样本通过embedding函数$F$映射到特征空间中，每个类的代表点用$r_1,...,r_{n_t}$来表示。最后引入一个度量模板$D$来衡量两个特征向量相似度(本代码中使用cosine similarity)
+在meta-training阶段，我们从base class数据集中随机抽取$`n_t`$个类，类别集合记作$`C_t`$，每个类中随机抽取$`n_s`$个样本，合并后作为小训练集，成为支持集$`S`$。然后再从每个类随机抽取若干样本，合并后作为小测试集，成为问询集$`Q`$。支持集和问询集中的样本通过embedding函数$F$映射到特征空间中，每个类的代表点用$`r_1,...,r_{n_t}`$来表示。最后引入一个度量模板$`D`$来衡量两个特征向量相似度(本代码中使用cosine similarity)
 
-对于每个问询集中的点$(x,y)∈Q$，我们计算他的特征向量到各个类代表点之间到相似度，然后通过softmax计算损失函数如下：
+对于每个问询集中的点$`(x,y)∈Q`$，我们计算他的特征向量到各个类代表点之间到相似度，然后通过softmax计算损失函数如下：
 
-$L^{cls}=-\frac {1}{|Q|} \sum_{(x,y)∈Q}log \frac{e^{D(F(x),r_y)}}{\sum_{k∈C_t}e^{D(F(x),r_k)}}$
+$$ L^{cls}=-\frac {1}{|Q|} \sum_{(x,y)∈Q}log \frac{e^{D(F(x),r_y)}}{\sum_{k∈C_t}e^{D(F(x),r_k)}} $$
 
 ### 1.3 自适应边际损失(Adaptive Margin Loss)
 
 为了更好地分开各个类别，一个最简单的加margin的方法是：
 
-$L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\sum_{k∈C_t \diagdown \{y\}}e^{D(F(x),r_k)+m}}}$
+$$ L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\sum_{k∈C_t \diagdown \{y\}}e^{D(F(x),r_k)+m}}} $$
 
 上述loss成为Native Additive Margin Loss(NAML)，它在类别两两之间加上了相同的边际$m$，强迫不同类的样本之间分开一定的距离。但是这种简单加上等距离边际的方法在小样本可能会带来错误。
 
@@ -47,7 +47,7 @@ $L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\
 
 ### 1.4 类别相关的边际损失(CRAML)
 
-对于两个类别$i$和$j$，首先得到他们的语义向量$e_i$和$e_j$，然后我们通过线性模型$M$来生成他们的边际，即$m^{cr}_{i,j}:=M(e_i,e_j)=\alpha \centerdot sim(e_i,e_j)+\beta$其中$\alpha$和$\beta$是要学习的参数，于是我么将损失函数改写成$L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\sum_{k∈C_t \diagdown \{y\}}e^{D(F(x),r_k)+m^{cr}_{y,k}}}}$
+对于两个类别$i$和$j$，首先得到他们的语义向量$`e_i`$和$`e_j`$，然后我们通过线性模型$M$来生成他们的边际，即$`m^{cr}_{i,j}:=M(e_i,e_j)=\alpha \centerdot sim(e_i,e_j)+\beta`$其中$\alpha$和$`\beta`$是要学习的参数，于是我么将损失函数改写成 $$ L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\sum_{k∈C_t \diagdown \{y\}}e^{D(F(x),r_k)+m^{cr}_{y,k}}}}$$
 
 通过合适地引入语义信息，CRAML可以把相似地类别在特征空间中分的更开，从而帮助更好地标识新类的样本
 
@@ -61,11 +61,11 @@ $L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\
 ![image](https://github.com/Wec126/TRAML-protonet/assets/57513224/bc4cfe82-ae32-4903-b6b2-71833633abcb)
 
 
-具体来说，对于一个meta-training task中的类$y∈C_t$，我们用一个神经网络$G$来生成task内的边际，即$\{m^{tr}_{y,k}\}_{y∈C_t\diagdown \{y\}}=G(\{sim(e_y,e_k)\}_{k∈C_t\diagdown \{y\}})$
+具体来说，对于一个meta-training task中的类$`y∈C_t`$，我们用一个神经网络$G$来生成task内的边际，即$`\{m^{tr}_{y,k}\}_{y∈C_t\diagdown \{y\}}=G(\{sim(e_y,e_k)\}_{k∈C_t\diagdown \{y\}})`$
 
 损失函数对应地改写为：
 
-$L^{tr}= -\frac{1}{|Q|}\sum_{(x,y)∈Q}log \frac{e^{D(F(x),r_y)}}{e^{D(F(x),r_y)+\sum_{k∈C_t\diagdown \{y\}}e^{D(F(x)),r_k}+m^{tr}_{y,k}}}$
+$$ L^{tr}= -\frac{1}{|Q|}\sum_{(x,y)∈Q}log \frac{e^{D(F(x),r_y)}}{e^{D(F(x),r_y)+\sum_{k∈C_t\diagdown \{y\}}e^{D(F(x)),r_k}+m^{tr}_{y,k}}} $$
 
 也就是说，对于同一个问询集样本$(x,y)∈Q$，我们首先计算它和task内其他每个类的语义相似度，然后把这些语义相似度通过神经网络$G$来生成损失函数需要的边际，最后累加到损失函数TRAML中
 
