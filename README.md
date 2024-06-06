@@ -79,4 +79,31 @@ $$ L^{tr}= -\frac{1}{|Q|}\sum_{(x,y)∈Q}log \frac{e^{D(F(x),r_y)}}{e^{D(F(x),r_
 python train.py
 ```
 
-## 3. Mindspore版本
+## 3. Mindspore版
+Mindspore版本基于
+```
+https://gitee.com/mindspore/models/blob/r1.9/research/cv/ProtoNet
+```
+以上链接的代码改进<br>
+<br>
+为匹配用户习惯，MSAdapter设计目的是在用户不感知的情况下，能适配PyTorch代码运行在昇腾（Ascend）设备上。MSAdapter以PyTorch的接口为标准，为用户提供一套和PyTorch一样（接口和功能完全一致）的中高阶模型构建接口和数据处理接口。图2展示了MSAdapter的层次结构。其特点如下：<br>
+轻量化封装<br>
+接口和功能与PyTorch完全映射<br>
+PyTorch代码少量修改可在Ascend运行<br>
+支持MindSpore原生接口<br>
+高效性能<br>
+![](https://img-blog.csdnimg.cn/img_convert/1438a0c8b9499ed17eec278d67129f05.png)<br>
+<br>
+使用改进算法需要将<br>
+```python
+import torch
+```
+改为<br>
+```python
+import msadapter.pytorch as torch
+```
+最后直接运行<br>
+```python
+python train.python
+```
+
