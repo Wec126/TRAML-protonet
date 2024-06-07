@@ -47,7 +47,7 @@ $$ L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))
 
 ### 1.4 类别相关的边际损失(CRAML)
 
-对于两个类别$i$和$j$，首先得到他们的语义向量$`e_i`$和$`e_j`$，然后我们通过线性模型$M$来生成他们的边际，即$`m^{cr}_{i,j}:=M(e_i,e_j)=\alpha \centerdot sim(e_i,e_j)+\beta`$其中$\alpha$和$`\beta`$是要学习的参数，于是我么将损失函数改写成 $$ L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\sum_{k∈C_t \diagdown \{y\}}e^{D(F(x),r_k)+m^{cr}_{y,k}}}}$$
+对于两个类别$i$和$j$，首先得到他们的语义向量$`e_i`$和$`e_j`$，然后我们通过线性模型$M$来生成他们的边际，即$`m^{cr}_{i,j}:=M(e_i,e_j)=\alpha \centerdot sim(e_i,e_j)+\beta`$其中$\alpha$和$`\beta`$是要学习的参数，于是我们将损失函数改写成 $$L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\sum_{k∈C_t \diagdown \{y\}}e^{D(F(x),r_k)+m^{cr}_{y,k}}}}$$
 
 通过合适地引入语义信息，CRAML可以把相似地类别在特征空间中分的更开，从而帮助更好地标识新类的样本
 
