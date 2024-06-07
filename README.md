@@ -41,13 +41,13 @@ $$ L^{cls}=-\frac {1}{|Q|} \sum_{(x,y)∈Q}log \frac{e^{D(F(x),r_y)}}{\sum_{k∈
 
 $$ L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\sum_{k∈C_t \diagdown \{y\}}e^{D(F(x),r_k)+m}}} $$
 
-上述loss成为Native Additive Margin Loss(NAML)，它在类别两两之间加上了相同的边际$m$，强迫不同类的样本之间分开一定的距离。但是这种简单加上等距离边际的方法在小样本可能会带来错误。
+上述loss成为Native Additive Margin Loss(NAML)，它在类别两两之间加上了相同的边际$`m`$，强迫不同类的样本之间分开一定的距离。但是这种简单加上等距离边际的方法在小样本可能会带来错误。
 
 为了进一步精细化设计边际，作者借助类别之间的语义相似度，来自适应地生成边际
 
 ### 1.4 类别相关的边际损失(CRAML)
 
-对于两个类别$i$和$j$，首先得到他们的语义向量$`e_i`$和$`e_j`$，然后我们通过线性模型$M$来生成他们的边际，即$`m^{cr}_{i,j}:=M(e_i,e_j)=\alpha \centerdot sim(e_i,e_j)+\beta`$其中$\alpha$和$`\beta`$是要学习的参数，于是我们将损失函数改写成 $$L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\sum_{k∈C_t \diagdown \{y\}}e^{D(F(x),r_k)+m^{cr}_{y,k}}}}$$
+对于两个类别$`i`$和$`j`$，首先得到他们的语义向量$`e_i`$和$`e_j`$，然后我们通过线性模型$`M`$来生成他们的边际，即$`m^{cr}_{i,j}:=M(e_i,e_j)=\alpha \centerdot sim(e_i,e_j)+\beta`$其中$`\alpha`$和$`\beta`$是要学习的参数，于是我们将损失函数改写成 $$L^{na}=-\frac{1}{|Q|}\sum_{(x,y)∈Q}log\frac{e^{D(F(x),r_y)}}{e^{D(F(x,r_y))+\sum_{k∈C_t \diagdown \{y\}}e^{D(F(x),r_k)+m^{cr}_{y,k}}}}$$
 
 通过合适地引入语义信息，CRAML可以把相似地类别在特征空间中分的更开，从而帮助更好地标识新类的样本
 
@@ -90,12 +90,7 @@ https://gitee.com/mindspore/models/blob/r1.9/research/cv/ProtoNet
 ```
 以上链接的代码改进<br>
 <br>
-为匹配用户习惯，MSAdapter设计目的是在用户不感知的情况下，能适配PyTorch代码运行在昇腾（Ascend）设备上。MSAdapter以PyTorch的接口为标准，为用户提供一套和PyTorch一样（接口和功能完全一致）的中高阶模型构建接口和数据处理接口。图2展示了MSAdapter的层次结构。其特点如下：<br>
-轻量化封装<br>
-接口和功能与PyTorch完全映射<br>
-PyTorch代码少量修改可在Ascend运行<br>
-支持MindSpore原生接口<br>
-高效性能<br>
+为匹配用户习惯，MSAdapter设计目的是在用户不感知的情况下，能适配PyTorch代码运行在昇腾（Ascend）设备上。MSAdapter以PyTorch的接口为标准，为用户提供一套和PyTorch一样（接口和功能完全一致）的中高阶模型构建接口和数据处理接口。下图展示了MSAdapter的层次结构。其特点如下：
 ![](https://img-blog.csdnimg.cn/img_convert/1438a0c8b9499ed17eec278d67129f05.png)<br>
 <br>
 使用改进算法需要将<br>
